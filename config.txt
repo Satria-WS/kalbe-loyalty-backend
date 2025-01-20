@@ -1,0 +1,9 @@
+Migrate the Database
+npx prisma migrate dev --name init
+
+After making any change schema.prisma, regenerate the Prisma Client:
+npx prisma generate
+
+
+
+catetan penjelasan dependency

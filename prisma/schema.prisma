@@ -1,0 +1,136 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  password      String
+  first_name    String
+  last_name     String?
+  address       String?
+  company       Company?  @relation(fields: [companyId], references: [id])
+  roles         Role[]
+  deleted_by_id String?
+  deleted_at    DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  createdBy     String?
+  updatedBy     String?
+  companyId     String?
+}
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  name  String
+  users User[]
+}
+
+model Company {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String?
+  updatedBy String?
+  User      User[]
+}
+
+model Product {
+  id                 String               @id @default(uuid())
+  name               String
+  sku                String
+  originSku          String
+  image              String?
+  description        String?
+  active             Boolean
+  suppliers          Supplier[]
+  unitPrice          Int
+  sellingPrice       Int
+  tier               Tier                 @relation(fields: [tierId], references: [id])
+  weight             Int
+  category           Category?             @relation(fields: [categoryId], references: [id])
+  packingCategory    Packing              @relation(fields: [packingId], references: [id])
+  deleted_by_id      String?
+  deleted_at         DateTime?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  createdBy          String?
+  updatedBy          String?
+  packingId          String
+  categoryId         String
+  ProductTransaction ProductTransaction[]
+  tierId             String
+}
+
+model Tier {
+  id        String    @id @default(uuid())
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  createdBy String?
+  updatedBy String?
+  Product   Product[]
+}
+
+model ProductTransaction {
+  id         String   @id @default(uuid())
+  product    Product  @relation(fields: [productId], references: [id])
+  productId  String
+  date       DateTime
+  quantity   Int
+  finalStock Int
+  remark     String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  createdBy  String?
+  updatedBy  String?
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  createdBy   String?
+  updatedBy   String?
+  Product     Product[]
+}
+
+model Packing {
+  id        String    @id @default(uuid())
+  name      String
+  dimension String
+  price     Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  createdBy String?
+  updatedBy String?
+  Product   Product[]
+}
+
+model Supplier {
+  id            String    @id @default(uuid())
+  name          String
+  address       String
+  telephone     String
+  email         String
+  contactPerson String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  createdBy     String?
+  updatedBy     String?
+  Product       Product[]
+}
