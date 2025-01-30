@@ -12,6 +12,7 @@ import { isAuthenticated } from '../middlewares/isAuthenticated.middleware';
 
 export const authRouter = Router();
 
+// login
 authRouter.post('/login', async (req: Request, res: Response) => {
   const { error } = loginValidation(req.body);
 
@@ -42,6 +43,7 @@ authRouter.post('/login', async (req: Request, res: Response) => {
   }
 });
 
+// register
 authRouter.post('/register', async (req: Request, res: Response) => {
   const { error } = userValidatorsPost(req.body);
 
@@ -88,6 +90,8 @@ authRouter.post('/register', async (req: Request, res: Response) => {
   }
 });
 
+
+// change-password
 authRouter.post('/change-password', isAuthenticated, async (req: RequestModified, res: Response) => {
   const body = req.body as ChangePasswordData;
 
@@ -115,6 +119,7 @@ authRouter.post('/change-password', isAuthenticated, async (req: RequestModified
   }
 });
 
+// me
 authRouter.get('/me', async (req: RequestModified, res: Response) => {
   if (!req.user) {
     return res.status(401).send('Not Authorized');
@@ -124,6 +129,7 @@ authRouter.get('/me', async (req: RequestModified, res: Response) => {
   res.status(200).json({ ...userNoPassword });
 });
 
+// logout
 authRouter.post('/logout', async (req: Request, res: Response) => {
   res.clearCookie('Authorization');
   res.status(200).json({ message: 'logged out' });
